@@ -23,6 +23,14 @@ TGAImage::TGAImage(const TGAImage& img) {
 	memcpy(data, img.data, nbytes);
 }
 
+TGAImage::TGAImage(TGAImage&& img) noexcept
+{
+	width = img.width;
+	height = img.height;
+	bytespp = img.bytespp;
+	data = std::move(img.data);
+}
+
 TGAImage::~TGAImage() {
 	if (data) delete[] data;
 }
@@ -36,6 +44,18 @@ TGAImage& TGAImage::operator =(const TGAImage& img) {
 		unsigned long nbytes = width * height * bytespp;
 		data = new unsigned char[nbytes];
 		memcpy(data, img.data, nbytes);
+	}
+	return *this;
+}
+
+TGAImage& TGAImage::operator=(TGAImage&& img) noexcept
+{
+	if (this != &img) {
+		if (data) delete[] data;
+		width = img.width;
+		height = img.height;
+		bytespp = img.bytespp;
+		data = std::move(img.data);
 	}
 	return *this;
 }
